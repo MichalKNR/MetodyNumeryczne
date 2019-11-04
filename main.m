@@ -18,6 +18,7 @@ args = [h_thermal_conductivity, A_cross_section, mb_rod_mass, mw_oil_mass, cb_oi
 
 temperature = [T_rod_start:T_rod_start+3000
                 T_oil_start:T_oil_start+3000];
+            
 temperature(:,2) = temperature(:,1) + time_step*oil_temp_transfer(temperature(:,1), temperature(:,2), args);            
 for i = 1 : length(time)-1
     time(i+1) = time(i) + time_step;
@@ -25,4 +26,13 @@ for i = 1 : length(time)-1
     temperature(:,i+2) = temperature(:,i+1) + time_step*oil_temp_transfer(temperature(:,i), temperature(:,i+1), args); 
 end
 
-temperature(:, TIME_MAX/time_step)
+plot_task1(time, temperature, TIME_MAX, time_step)
+
+function plot_task1(t, y, TIME_MAX, time_step)
+t = [t TIME_MAX+time_step];
+figure 
+plot(t, y(1,:), t, y(2,:))
+title('symulator, zadanie 1')
+xlabel('czas [s]')
+ylabel('temperatura [C]')
+end
