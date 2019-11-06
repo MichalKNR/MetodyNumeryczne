@@ -1,4 +1,4 @@
-function dy = oil_temp_transfer(temperature_vector_prev,temperature_vector, arguments)
+function dy = oil_temp_transfer(temperature_vector_prev, arguments)
 A_cross_section =  arguments(1);       
 mb_rod_mass = arguments(2);            
 mw_oil_mass = arguments(3);            
