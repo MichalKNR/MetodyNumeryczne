@@ -2,6 +2,7 @@ clc;
 clear;
 
 do_task_3 = 0;
+do_task_4 = 1;
 
 A_cross_section =  0.0109;
 mb_rod_mass = 0.2; %task 1 version         
@@ -14,7 +15,7 @@ arguments = [A_cross_section, mb_rod_mass, mw_oil_mass, cb_rod_heat_capacity, cw
 T_rod_start = 1200;       
 T_oil_start = 25;  
 
-TIME_MAX = 5;
+TIME_MAX = 3;
 time_step = 0.0001;
 time = 0:time_step:TIME_MAX;
 n = TIME_MAX/time_step;
@@ -32,17 +33,20 @@ for i = 1 : length(time)-1
     temperature(:,i+1) = temperature(:,i) + time_step*oil_temp_transfer(temperature(:,i), arguments); 
 end
 
-plot_task1(time, temperature)
+final_temperature_normal = temperature(:, n);
+plot_task1(time, temperature, T_oil_start, T_rod_start, TIME_MAX,time_step, final_temperature_normal(2), final_temperature_normal(1))
 
-final_temperature_normal = temperature(:, n)
+if do_task_4 == 1
+    change_vulnerability(final_temperature_normal, time, time_step, TIME_MAX, arguments, 1200, 25)
+    change_vulnerability(final_temperature_normal, time, time_step, TIME_MAX, arguments, 700, 50)
+end
 
-change_vulnerability(final_temperature_normal, time, time_step, TIME_MAX, arguments, 1200, 25)
-change_vulnerability(final_temperature_normal, time, time_step, TIME_MAX, arguments, 700, 50)
-
-function plot_task1(t, y)
+function plot_task1(t, y, Tw, Tb, t_max, t_step, Tw_final, Tb_final)
 figure 
 plot(t, y(1,:), t, y(2,:))
-title('symulator, zadanie 1')
+txt = {['Tw(0):      ' num2str(Tw)],['Tw(end):  ' num2str(Tw_final)],[' '], ['Tb(0):      ' num2str(Tb)], ['Tb(end):  ' num2str(Tb_final)],[' '],[ 'Tsym:      ' num2str(t_max)],[ 'Tstep:      ' num2str(t_step)]};
+text(1.5, 500, txt,'FontSize',14)
+title('Symulator, zadanie 1')
 xlabel('czas [s]')
 ylabel('temperatura [C]')
 end
@@ -58,10 +62,11 @@ for i = 1 : length(time)-1
     time(i+1) = h*i;
     temperature(:,i+1) = temperature(:,i) + h*oil_temp_transfer(temperature(:,i), arguments); 
 end
-arguments(3) = arguments(3) + 1;
+arguments(3) = arguments(3) + 0.1;
 temperature(:,n) %end temperature in simulation
+arguments(3)
 end
-mass = arguments(3)
+mass = arguments(3);
 end
 
 
