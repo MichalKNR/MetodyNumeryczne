@@ -18,7 +18,7 @@ T_oil_start = 25;
 
 %zmienne opisuj¹ce czas i krok symulacji
 TIME_MAX = 3;
-time_step = 0.1;
+time_step = 0.0001;
 time = 0:time_step:TIME_MAX;
 n = TIME_MAX/time_step;
 
@@ -30,13 +30,13 @@ end
 temperature = [T_rod_start:T_rod_start+n
                 T_oil_start:T_oil_start+n];
 
-%ca³kowanie metod¹ ulepszona Eulera            
+%ca³kowanie metod¹ jawna Eulera            
 for i = 1 : length(time)-1
     time(i+1) = time_step*i;
-    y_1_2 = temperature(:,i) + time_step/2*oil_temp_transfer(temperature(:,i), arguments);
-    temperature(:,i+1) = temperature(:,i) + time_step*oil_temp_transfer(y_1_2, arguments); 
+    %y_1_2 = temperature(:,i) + time_step/2*oil_temp_transfer(temperature(:,i), arguments);
+    %temperature(:,i+1) = temperature(:,i) + time_step*oil_temp_transfer(y_1_2, arguments); 
     
-    %temperature(:,i+1) = temperature(:,i) + time_step*oil_temp_transfer(temperature(:,i), arguments); 
+    temperature(:,i+1) = temperature(:,i) + time_step*oil_temp_transfer(temperature(:,i), arguments); 
     %temperature(:,i+1) = temperature(:,i) + time_step*oil_temp_transfer(temperature(:,i+1), arguments);
 end
 % rysowanie wykresu
@@ -61,7 +61,7 @@ text(1.5, 500, txt,'FontSize',14)
 title('Symulator, zadanie 1')
 xlabel('czas [s]')
 ylabel('temperatura [C]')
-legend('h(delta T)')
+legend('Tb','Tw')
 end
 
 function mass = calculate_oil_mass(Tw, Tb, arguments, time, n, h)
