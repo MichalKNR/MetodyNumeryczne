@@ -4,6 +4,7 @@ clear;
 % decydowanie które zadanie powinno og³aszaæ swoje wyniki
 do_task_3 = 0;
 do_task_4 = 0;
+calculate_error = 1;
 
 %podstawowe wartoœci wspó³czynników
 A_cross_section =  0.0109;
@@ -26,13 +27,18 @@ if do_task_3 == 1
     calculate_oil_mass(T_oil_start, T_rod_start, arguments, time, n, time_step);
 end
 
+if calculate_error == 1
+    e_avg = calculate_approx_error()
+end
+
 %przygotowanie wektora wynikowego
 temperature = [T_rod_start:T_rod_start+n
                 T_oil_start:T_oil_start+n];
 
-%ca³kowanie metod¹ jawna Eulera            
+%ca³kowanie metod¹ jawna Eulera 
+% odkomentowujaæ mo¿na wybieraæ inne metody
 for i = 1 : length(time)-1
-    time(i+1) = time_step*i;
+%   time(i+1) = time_step*i;
     %y_1_2 = temperature(:,i) + time_step/2*oil_temp_transfer(temperature(:,i), arguments);
     %temperature(:,i+1) = temperature(:,i) + time_step*oil_temp_transfer(y_1_2, arguments); 
     
@@ -124,3 +130,32 @@ end
 args_vulnerability
 time_vulnerability
 end
+
+function e = calculate_approx_error()
+    x = -1500:2000;
+    y_poly = -1500:2000;
+    y_spline = -1500:2000;
+    
+    for i = 1 : length(x)
+        h = thermal_conductivity(x(i), 5);
+        y_poly(i) = h(1);
+        y_spline(i) = h(2);
+    end
+    h = 2; %odleg³oœæ pomiêdzy dwoma krañcami 3 punktów przyjetych do metody paraboli
+    err_sum = 0;
+    for i = 1 : (length(x)/2-1)
+        err_sum = err_sum + h/3*(abs(y_poly(2*i-1) - y_spline(2*i-1)) + 4*abs((y_poly(2*i) - y_spline(2*i))) + abs(y_poly(2*i+1) - y_spline(2*i+1)));
+    end
+    e = err_sum/length(x);
+    
+    figure
+    plot(x, y_poly, x, y_spline)
+    title('Ró¿nica funkcji aproksymuj¹cych')
+    xlabel('ró¿nica temperatur [C]')
+    ylabel('przewodnictwo cieplne [W/m^2]')
+    txt = 'e = |h_aproksymacja - h_funkcje_sklejane|';
+    text(-800, 177, txt)
+    legend ('Wielomian interpolacyjny', 'Funkcje sklejane')
+    
+end
+

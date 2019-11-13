@@ -25,7 +25,11 @@ for i = 2 : (length(x_step)-1)
     y_step(i) = coefficients_1_order(1,find_foo_index(x_step(i))) + x_step(i)*coefficients_1_order(2,find_foo_index(x_step(i)));
 end
 % w tym miejscu mamy funkcjê sklejan¹ pierwszego stopnia
+figure
 plot(x_step, y_step)
+title('Funkcja sklejana pierwszego rzêdu')
+xlabel('ró¿nica temperatur [C]')
+ylabel('przewodnictwo cieplne [W/m^2]')
 
 alfa = coefficients_1_order(2,1)/step;
 beta = coefficients_1_order(2,end)/step;
@@ -53,8 +57,8 @@ c = [c_m1 c' c_p13];
 %ka¿da funkcja bazowa jest dzielona przez trzeci¹ potegê odleg³osci pomiêdzy wêz³ami
 c = c/step^3;
 
-XX = -1500 : 1700;
-YY = -1500 : 1700;
+XX = -1500 : 2000;
+YY = -1500 : 2000;
 x_step = [-1791.66 x_step 2291.66];
 y_step(1) = 178;
 y_step(end) = 179;
@@ -69,8 +73,12 @@ for i = 1 : length(XX)
         YY(i) = y_step(index(1)-2);
     end
 end
-
+figure
 plot(XX,YY)
+title('Funkcja sklejana trzeciego rzêdu')
+xlabel('ró¿nica temperatur [C]')
+ylabel('przewodnictwo cieplne [W/m^2]')
+
 
 %x musi sie zawieraæ w przedziale (-1500, 2000)
 function index = find_foo_index(x)
